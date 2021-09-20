@@ -1,0 +1,35 @@
+service: node-lambda-example
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: sa-east-1
+  memorySize: 256
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+      Resource:
+        - "arn:aws:s3:::*"
+
+functions:
+  optimize:
+    handler: optmize.handle
+    environment:
+      bucket: nodelambdaexamplearthurbarbero
+    events:
+        - s3:
+            bucket: nodelambdaexamplearthurbarbero
+            event: s3:ObjectCreated:*
+            rules:
+              - prefix: uploads/
+              - suffix: .jpg
+        - s3:
+            bucket: nodelambdaexamplearthurbarbero
+            event: s3:ObjectCreated:*
+            rules:
+              - prefix: uploads/
+              - suffix: .png
